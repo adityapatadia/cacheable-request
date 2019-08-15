@@ -41,7 +41,7 @@
 		"@keyv/sqlite": "^2.0.0",
 		"ava": "^2.2.0",
 		"coveralls": "^3.0.0",
-		"create-test-server": "3.0.0",
+		"create-test-server": "3.0.1",
 		"delay": "^4.0.0",
 		"nyc": "^14.1.1",
 		"pify": "^4.0.0",
