@@ -104,6 +104,8 @@ class CacheableRequest {
 	}
 
 	async handler(response, revalidate, opts, key) {
+		// this status setting is required by http-cache-semantics...
+		response.status = response.statusCode;
 		if (revalidate) {
 			const revalidatedPolicy = CachePolicy.fromObject(revalidate.cachePolicy).revalidatedPolicy(opts, response);
 			if (!revalidatedPolicy.modified) {
