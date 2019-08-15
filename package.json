@@ -10,7 +10,7 @@
 		"node": ">=8"
 	},
 	"scripts": {
-		"test": "nyc ava",
+		"test": "nyc ava --verbose",
 		"coverage": "nyc report --reporter=text-lcov | coveralls"
 	},
 	"files": [

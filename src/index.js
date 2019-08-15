@@ -91,7 +91,10 @@ class CacheableRequest {
 	}
 
 	async makeRequest(request, opts, ee, key, revalidate) {
+		// everything must be settled...
+		await Promise.resolve();
 		const self = this;
+
 		return new Promise((resolve, reject) => {
 			const req = request(opts, response => {
 				self.handler(response, revalidate, opts, key).then(resolve).catch(reject);
