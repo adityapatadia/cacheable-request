@@ -10,7 +10,7 @@
 		"node": ">=8"
 	},
 	"scripts": {
-		"test": "xo && nyc ava",
+		"test": "nyc ava",
 		"coverage": "nyc report --reporter=text-lcov | coveralls"
 	},
 	"files": [
@@ -43,14 +43,9 @@
 		"coveralls": "^3.0.0",
 		"create-test-server": "3.0.0",
 		"delay": "^4.0.0",
-		"eslint-config-xo-lukechilds": "^1.0.0",
 		"nyc": "^14.1.1",
 		"pify": "^4.0.0",
 		"sqlite3": "^4.0.2",
-		"this": "^1.0.2",
-		"xo": "^0.23.0"
-	},
-	"xo": {
-		"extends": "xo-lukechilds"
+		"this": "^1.0.2"
 	}
 }
