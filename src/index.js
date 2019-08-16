@@ -99,6 +99,8 @@ class CacheableRequest {
 			const req = request(opts, response => {
 				self.handler(response, revalidate, opts, key).then(resolve).catch(reject);
 			});
+			req.on('error', () =>{});
+			req.on('abort', () =>{});
 			ee.emit('request', req);
 		});
 	}
@@ -183,7 +185,7 @@ class CacheableRequest {
 
 		if (Buffer.isBuffer(body) && body.byteLength != 0 && lengthMatches) {
 			// Only store non-empty responses...
-			this.cache.set(key, value, ttl);
+			await this.cache.set(key, value, ttl);
 		}
 	}
 }
