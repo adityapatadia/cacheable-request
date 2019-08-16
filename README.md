@@ -27,7 +27,7 @@
 ## Install
 
 ```shell
-npm install cacheable-request
+npm install improved-cacheable-request
 ```
 
 ## Usage
