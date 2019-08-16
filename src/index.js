@@ -77,17 +77,14 @@ class CacheableRequest {
 		const policy = CachePolicy.fromObject(cacheEntry.cachePolicy);
 		if (policy.satisfiesWithoutRevalidation(opts) && !opts.forceRefresh) {
 			const headers = policy.responseHeaders();
-			// This is a temporary fix. we can remove it after bad cache is flushed...
-			if (headers['content-length'] && parseInt(headers['content-length']) == cacheEntry.body.byteLength) {
-				const response = new Response(cacheEntry.statusCode, headers, cacheEntry.body, cacheEntry.url);
-				response.cachePolicy = policy;
-				response.fromCache = true;
-				return response;
-			}
-			return this.makeRequest(request, opts, ee, key);
+			const response = new Response(cacheEntry.statusCode, headers, cacheEntry.body, cacheEntry.url);
+			response.cachePolicy = policy;
+			response.fromCache = true;
+			return response;
+		} else {
+			opts.headers = policy.revalidationHeaders(opts);
+			return this.makeRequest(request, opts, ee, key, cacheEntry);
 		}
-		opts.headers = policy.revalidationHeaders(opts);
-		return this.makeRequest(request, opts, ee, key, cacheEntry);
 	}
 
 	async makeRequest(request, opts, ee, key, revalidate) {
