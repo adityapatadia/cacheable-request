@@ -161,10 +161,6 @@ class CacheableRequest {
 			return;
 		}
 
-		if (Buffer.isBuffer(body) && body.byteLength == 0) {
-			console.log('ZERO_LENGTH_RESPONSE was received from other server....');
-		}
-
 		const value = {
 			cachePolicy: response.cachePolicy.toObject(),
 			url: response.url,
