@@ -2,8 +2,8 @@
 
 > Wrap native HTTP requests with RFC compliant cache support
 
-[![Build Status](https://travis-ci.org/gumlet/cacheable-request.svg?branch=master)](https://travis-ci.org/gumlet/cacheable-request)
-[![Coverage Status](https://coveralls.io/repos/github/gumlet/cacheable-request/badge.svg?branch=master)](https://coveralls.io/github/gumlet/cacheable-request?branch=master)
+
+[![Build Status](https://github.com/gumlet/cacheable-request/workflows/Node%20CI/badge.svg)](https://github.com/gumlet/cacheable-request/actions)
 
 [RFC 7234](http://httpwg.org/specs/rfc7234.html) compliant HTTP caching for native Node.js HTTP/HTTPS requests. Caching works out of the box in memory or is easily pluggable with a wide range of storage adapters.
 
