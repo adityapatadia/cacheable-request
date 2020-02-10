@@ -39,7 +39,7 @@
 	},
 	"devDependencies": {
 		"@keyv/sqlite": "^2.0.0",
-		"ava": "^2.2.0",
+		"ava": "^3.3.0",
 		"coveralls": "^3.0.0",
 		"create-test-server": "3.0.1",
 		"delay": "^4.0.0",
