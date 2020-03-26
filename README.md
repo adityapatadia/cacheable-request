@@ -156,6 +156,13 @@ Default: `false`
 
 Forces refreshing the cache. If the response could be retrieved from the cache, it will perform a new request and override the cache instead.
 
+###### opts.forceMaxAge
+
+Type: `integer`<br>
+Default: `0`
+
+Forces max-age for the cache. This setting will override max-age parameter provided in response.
+
 ##### cb
 
 Type: `function`
