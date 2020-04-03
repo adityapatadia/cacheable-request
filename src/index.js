@@ -121,7 +121,7 @@ class CacheableRequest {
     }
 
     let clonedResponse;
-    if (opts.cache && response.cachePolicy.storable()) {
+    if (opts.cache && response.statusCode < 400 && response.cachePolicy.storable()) {
       clonedResponse = cloneResponse(response);
       this.storeResponse(response, revalidate, opts, key);
     } else if (opts.cache && revalidate) {
