@@ -153,7 +153,8 @@ class CacheableRequest {
         resolve();
       })),
       new Promise(resolve => response.once('end', () => {
-        body = Buffer.concat(body);
+        if (!response.complete) requestAborted = true;
+        else body = Buffer.concat(body);
         resolve();
       }))
     ]);
