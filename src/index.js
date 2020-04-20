@@ -12,7 +12,6 @@ const CachePolicy = require('http-cache-semantics');
 const Response = require('responselike');
 const lowercaseKeys = require('lowercase-keys');
 const cloneResponse = require('clone-response');
-const Keyv = require('keyv');
 
 class CacheableRequest {
   constructor(request, cacheAdapter) {
@@ -20,11 +19,7 @@ class CacheableRequest {
       throw new TypeError('Parameter `request` must be a function');
     }
 
-    this.cache = new Keyv({
-      uri: typeof cacheAdapter === 'string' && cacheAdapter,
-      store: typeof cacheAdapter !== 'string' && cacheAdapter,
-      namespace: 'cacheable-request'
-    });
+    this.cache = cacheAdapter;
 
     return this.createCacheableRequest(request);
   }
@@ -36,11 +31,7 @@ class CacheableRequest {
       opts = optsAndURL[0];
       const normalizedUrlString = optsAndURL[1];
 
-      const key = `${opts.method}:${normalizedUrlString}`;
-
-      const errorHandler = error => ee.emit('error', new CacheableRequest.CacheError(error));
-      this.cache.once('error', errorHandler);
-      ee.on('response', () => this.cache.removeListener('error', errorHandler));
+      const key = `cacheable-request:${opts.method}:${normalizedUrlString}`;
 
       this.getRequest(request, opts, key, ee).then(response => {
         if (response) {
