@@ -1,6 +1,6 @@
 {
 	"name": "improved-cacheable-request",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Wrap native HTTP requests with RFC compliant cache support",
 	"license": "MIT",
 	"repository": "gumlet/cacheable-request",

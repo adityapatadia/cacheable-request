@@ -114,6 +114,19 @@ class CacheableRequest {
     let clonedResponse;
     if (opts.cache && response.statusCode < 400 && response.cachePolicy.storable()) {
       clonedResponse = cloneResponse(response);
+
+      // this fix is igly fix related to https://github.com/sindresorhus/got/issues/1385
+      // once clone-response package is updated, this won't be needed.
+      const fix = () => {
+  			if (!clonedResponse.req) {
+  				return;
+  			}
+
+  			clonedResponse.complete = response.req.res.complete;
+  		};
+      response.once('end', fix);
+      // the fix ends here...
+
       this.storeResponse(response, revalidate, opts, key);
     } else if (opts.cache && revalidate) {
       try {
