@@ -10,8 +10,8 @@ const urlLib = require('url');
 const normalizeUrl = require('normalize-url');
 const CachePolicy = require('http-cache-semantics');
 const Response = require('responselike');
+const PassThrough = require('stream').PassThrough;
 const lowercaseKeys = require('lowercase-keys');
-const cloneResponse = require('clone-response');
 
 class CacheableRequest {
   constructor(request, cacheAdapter) {
@@ -114,19 +114,6 @@ class CacheableRequest {
     let clonedResponse;
     if (opts.cache && response.statusCode < 400 && response.cachePolicy.storable()) {
       clonedResponse = cloneResponse(response);
-
-      // this fix is igly fix related to https://github.com/sindresorhus/got/issues/1385
-      // once clone-response package is updated, this won't be needed.
-      const fix = () => {
-  			if (!clonedResponse.req) {
-  				return;
-  			}
-
-  			clonedResponse.complete = response.req.res.complete;
-  		};
-      response.once('end', fix);
-      // the fix ends here...
-
       this.storeResponse(response, revalidate, opts, key);
     } else if (opts.cache && revalidate) {
       try {
@@ -268,6 +255,72 @@ CacheableRequest.CacheError = class extends Error {
     this.name = 'CacheError';
     Object.assign(this, error);
   }
+};
+
+const mimicResponse = (fromStream, toStream) => {
+	if (toStream._readableState.autoDestroy) {
+		throw new Error('The second stream must have the `autoDestroy` option set to `false`');
+	}
+
+	const fromProperties = new Set(Object.keys(fromStream).concat(knownProperties));
+
+	const properties = {};
+
+	for (const property of fromProperties) {
+		// Don't overwrite existing properties.
+		if (property in toStream) {
+			continue;
+		}
+
+		properties[property] = {
+			get() {
+				const value = fromStream[property];
+				const isFunction = typeof value === 'function';
+
+				return isFunction ? value.bind(fromStream) : value;
+			},
+			set(value) {
+				fromStream[property] = value;
+			},
+			enumerable: true,
+			configurable: false
+		};
+	}
+
+	Object.defineProperties(toStream, properties);
+
+	fromStream.once('aborted', () => {
+		toStream.destroy();
+
+		toStream.emit('aborted');
+	});
+
+	fromStream.once('close', () => {
+		if (fromStream.complete) {
+			if (toStream.readable) {
+				toStream.once('end', () => {
+					toStream.emit('close');
+				});
+			} else {
+				toStream.emit('close');
+			}
+		} else {
+			toStream.emit('close');
+		}
+	});
+
+	return toStream;
+};
+
+const cloneResponse = response => {
+	if (!(response && response.pipe)) {
+		throw new TypeError('Parameter `response` must be a response stream.');
+	}
+
+	const clone = new PassThrough();
+	mimicResponse(response, clone);
+
+	return response.pipe(clone);
 };
 
 module.exports = CacheableRequest;
